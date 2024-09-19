@@ -1,11 +1,11 @@
-import { accounts, NotificationChannel } from '@car-qr-link/apis';
+import { NotificationChannel } from '@car-qr-link/apis';
 import { BadRequestException, Body, ConflictException, Controller, Get, Logger, Param, Patch } from '@nestjs/common';
-import { AccountsConfig } from 'src/config/accounts.config';
-import { LinkRequest, LinkResponse } from './qrs.dto';
-import { AccountsService } from 'src/core/accounts/accounts.service';
-import { parsePhoneNumber } from 'libphonenumber-js';
 import { randomBytes, randomInt } from 'crypto';
+import { parsePhoneNumber } from 'libphonenumber-js';
+import { AccountsService } from 'src/core/accounts/accounts.service';
+import { MessagingService } from 'src/core/messaging/messaging.service';
 import { StorageService } from 'src/core/storage/storage.service';
+import { LinkRequest, LinkResponse } from './qrs.dto';
 
 @Controller('api/qrs')
 export class QrsController {
@@ -13,7 +13,8 @@ export class QrsController {
 
     constructor(
         protected readonly accountsService: AccountsService,
-        protected readonly storageService: StorageService
+        protected readonly storageService: StorageService,
+        protected readonly messagingService: MessagingService
     ) { }
 
     @Get(':code')
@@ -36,7 +37,7 @@ export class QrsController {
             throw new ConflictException('QR уже привязан');
         }
 
-        const phoneNumber = parsePhoneNumber(body.phone, 'RU');
+        const phoneNumber = parsePhoneNumber(body.phone, 'RU')?.format('E.164');
         if (!phoneNumber) {
             throw new BadRequestException('Некорректный формат номера телефона');
         }
@@ -48,9 +49,15 @@ export class QrsController {
             requestId,
             {
                 channel: NotificationChannel.Phone,
-                address: phoneNumber.format('E.164'),
+                address: phoneNumber,
                 code: confirmCode,
             }
+        );
+
+        await this.messagingService.send(
+            NotificationChannel.Phone,
+            phoneNumber,
+            `${confirmCode} - код подтверждения Мешает.рф`
         );
 
         return {
