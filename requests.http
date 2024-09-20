@@ -4,10 +4,10 @@
 GET {{baseUrl}} HTTP/1.1
 
 ###
-GET {{baseUrl}}/qrs/1 HTTP/1.1
+GET {{baseUrl}}/qrs/2 HTTP/1.1
 
 ###
-PATCH {{baseUrl}}/qrs/1/link HTTP/1.1
+POST {{baseUrl}}/qrs/1/link HTTP/1.1
 Content-Type: application/json
 
 {
@@ -16,3 +16,18 @@ Content-Type: application/json
 }
 
 ###
+POST {{baseUrl}}/qrs/1/link/confirm HTTP/1.1
+Content-Type: application/json
+
+{
+    "requestId": "125127c152761ef03c1ea386f35846e94e1f",
+    "code": "86312"
+}
+
+###
+POST {{baseUrl}}/qrs/3/notify HTTP/1.1
+Content-Type: application/json
+
+{
+    
+}
