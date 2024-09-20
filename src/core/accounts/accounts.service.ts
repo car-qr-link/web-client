@@ -1,4 +1,5 @@
-import { accounts, NotFoundError, NotificationChannel } from '@car-qr-link/apis';
+import { accounts, NotificationChannel } from '@car-qr-link/apis';
+import { LinkQrRequest } from '@car-qr-link/apis/dist/accounts';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { AccountsConfig } from 'src/config/accounts.config';
 
@@ -15,6 +16,8 @@ export class AccountsService {
     }
 
     async getQr(code: string): Promise<accounts.GetQrResponse> {
+        this.logger.debug(`GET /qrs/${code}`);
+
         if (code === '1') {
             return {
                 qr: {
@@ -39,7 +42,37 @@ export class AccountsService {
                 }
             };
         }
+        if (code === '3') {
+            return {
+                qr: {
+                    id: '3',
+                    accountId: '2',
+                },
+                account: {
+                    id: '2',
+                    contacts: [{
+                        channel: NotificationChannel.Phone,
+                        address: process.env.PHONE,
+                    }],
+                }
+            };
+        }
 
         throw new NotFoundException();
+    }
+
+    async linkQr(code: string, phone: string, licensePlate: string): Promise<void> {
+        const request: LinkQrRequest = {
+            account: {
+                contacts: [{
+                    channel: NotificationChannel.Phone,
+                    address: phone,
+                }]
+            },
+            qr: {
+                licensePlate
+            }
+        };
+        this.logger.debug(`PATCH /qrs/${code}`, request);
     }
 }
