@@ -21,7 +21,7 @@ export class StorageService implements OnModuleInit, OnModuleDestroy {
         });
     }
 
-    async saveVerifyRequest(id: string, data: VerifyRequest): Promise<void> {
+    async saveVerifyRequest<T>(id: string, data: VerifyRequest<T>): Promise<void> {
         await this.client.setEx(
             `${this.namespace}:verify:${id}`,
             this.timeout,
@@ -29,7 +29,7 @@ export class StorageService implements OnModuleInit, OnModuleDestroy {
         );
     }
 
-    async getVerifyRequest(id: string): Promise<VerifyRequest | null> {
+    async getVerifyRequest<T>(id: string): Promise<VerifyRequest<T> | null> {
         const data = await this.client.get(`${this.namespace}:verify:${id}`);
         return data ? JSON.parse(data) : null
     }
