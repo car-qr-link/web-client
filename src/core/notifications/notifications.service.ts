@@ -17,7 +17,7 @@ export class NotificationsService {
 
     async notify(
         account: BaseAccount,
-        reasonId: string | undefined
+        reasonId: string | undefined = undefined
     ): Promise<SendNotificationResponse> {
         this.logger.debug('NOTIFY', account);
 
