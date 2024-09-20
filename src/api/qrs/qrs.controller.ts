@@ -1,5 +1,5 @@
 import { NotificationChannel } from '@car-qr-link/apis';
-import { BadRequestException, Body, ConflictException, Controller, Get, HttpCode, Logger, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, ConflictException, Controller, HttpCode, Logger, Param, Post } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiConflictResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { randomBytes, randomInt } from 'crypto';
 import { parsePhoneNumber } from 'libphonenumber-js';
@@ -8,7 +8,7 @@ import { MessagingService } from 'src/core/messaging/messaging.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
 import { StorageService } from 'src/core/storage/storage.service';
 import { EXAMPLES, TAG_QR } from 'src/swagger';
-import { GetResponse, LinkConfirmRequest, LinkRequest, LinkResponse, NotifyRequest, NotifyResponse, VerifyRequestPayload } from './qrs.dto';
+import { LinkConfirmRequest, LinkRequest, LinkResponse, PostResponse, VerifyRequestPayload } from './qrs.dto';
 
 @Controller('api/qrs')
 @ApiTags(TAG_QR)
@@ -22,22 +22,31 @@ export class QrsController {
         protected readonly notificationsService: NotificationsService
     ) { }
 
-    @Get(':code')
-    @ApiOperation({ summary: 'Получить QR', description: 'Возвращает информацию о QR-коде и наличии привязанной учетной записи' })
+    @Post(':code')
+    @ApiOperation({ summary: 'Уведомить владельца QR', description: 'Отправляет уведомление владельцу QR или возвращает состояние QR' })
     @ApiParam({ name: 'code', type: String, description: 'Значение QR', example: EXAMPLES.QR_CODE })
-    @ApiOkResponse({ type: GetResponse })
+    @ApiOkResponse({ type: PostResponse })
     @ApiNotFoundResponse({ description: 'QR не найден' })
-    async get(@Param('code') code: string): Promise<GetResponse> {
-        const result = await this.accountsService.getQr(code);
+    async get(@Param('code') code: string): Promise<PostResponse> {
+        const { qr, account } = await this.accountsService.getQr(code);
+        if (!account) {
+            return {
+                qr: {
+                    code: qr.id,
+                }
+            };
+        }
 
-        const res: GetResponse = {
+        const { notification, answer, contact } = await this.notificationsService.notify(account);
+
+        return {
             qr: {
-                code: result.qr.id,
+                code: qr.id,
             },
-            account: result.account ? {} : undefined,
-        };
-
-        return res;
+            notification,
+            answer,
+            contact,
+        }
     }
 
     @Post(':code/link')
@@ -120,35 +129,5 @@ export class QrsController {
             result.payload.phone,
             result.payload.licensePlate
         );
-    }
-
-    @Post(':code/notify')
-    @ApiOperation({ summary: 'Отправить уведомление', description: 'Отправляет уведомление владельцу QR-кода. Если уведомление уже отправлено, но обратной связи не получено, то возвращает актуальные контакты.' })
-    @ApiParam({ name: 'code', type: String, description: 'Значение QR', example: EXAMPLES.QR_CODE })
-    @ApiOkResponse({ type: NotifyResponse })
-    @ApiNotFoundResponse({ description: 'QR не найден' })
-    @ApiConflictResponse({ description: 'QR не привязан' })
-    async notify(
-        @Param('code') code: string,
-        @Body() body: NotifyRequest
-    ): Promise<NotifyResponse> {
-        const qr = await this.accountsService.getQr(code);
-        if (!qr.account) {
-            throw new ConflictException('QR не привязан');
-        }
-
-        const result = await this.notificationsService.notify(
-            qr.account
-        );
-
-        const isAlreadyNotified = !result.answer
-            && ((new Date()).getTime() - result.notification.sentAt.getTime()) > 5 * 60 * 1000;
-
-        const res: NotifyResponse = {
-            answer: result.answer,
-            contact: isAlreadyNotified ? qr.account.contacts.find(c => c.channel === NotificationChannel.Phone) : null,
-        };
-
-        return res;
     }
 }
