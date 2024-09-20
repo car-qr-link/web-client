@@ -1,6 +1,6 @@
 import { Contact, notification } from "@car-qr-link/apis";
-import { ApiProperty, ApiPropertyOptional, PartialType, PickType } from "@nestjs/swagger";
-import { IsDecimal, IsNotEmpty, IsOptional, IsPhoneNumber } from "class-validator";
+import { ApiProperty, ApiPropertyOptional, PickType } from "@nestjs/swagger";
+import { IsNotEmpty, IsPhoneNumber } from "class-validator";
 import { EXAMPLES } from "src/swagger";
 
 export class Qr {
@@ -8,12 +8,18 @@ export class Qr {
     code: string;
 }
 
-export class GetResponse {
+export class PostResponse {
     @ApiProperty({ description: 'Информация о QR' })
-    qr: Qr
+    qr: Qr;
 
-    @ApiPropertyOptional({ description: 'Наличие привязанной учетной записи' })
-    account?: {}
+    @ApiPropertyOptional({ description: 'Отправленное уведомление, если QR привязан' })
+    notification?: notification.Notification;
+
+    @ApiPropertyOptional({ description: 'Контакты владельца QR, если нет ответа на уведомление' })
+    contact?: Contact;
+
+    @ApiPropertyOptional({ description: 'Ответ владельца QR' })
+    answer?: notification.Answer;
 }
 
 export class LinkRequest {
@@ -49,15 +55,6 @@ export class LinkConfirmRequest {
 }
 
 export class LinkConfirmResponse { }
-
-export class NotifyRequest { }
-
-export class NotifyResponse {
-    @ApiPropertyOptional({ description: 'Контакты владельца QR' })
-    contact?: Contact;
-    @ApiPropertyOptional({ description: 'Ответ владельца QR' })
-    answer?: notification.Answer;
-}
 
 
 export interface VerifyRequestPayload extends LinkRequest {
