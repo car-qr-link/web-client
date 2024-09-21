@@ -1,0 +1,16 @@
+<%- include('partials/header', {title: 'Вызови водителя!'}) %>
+
+    <!-- Form Section -->
+    <section class="form-section container">
+        <h2 class="text-center mb-4">Введите код с таблички</h2>
+        <form method="post">
+            <div class="form-group">
+                <input type="text" name="code" class="form-control" placeholder="QR-код или гос. номер"
+                    style="text-align: center;">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Вызвать водителя</button>
+        </form>
+        <p class="text-center mt-3">Не удалось отсканировать QR-код? Введите код вручную.</p>
+    </section>
+
+<%- include('partials/footer') %>

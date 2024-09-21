@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { LoggerModule } from 'nestjs-pino';
-import { join } from 'path';
 import { ApiModule } from './api/api.module';
-import { CoreModule } from './core/core.module';
+import { AppController } from './app/app.controller';
 import { ConfigModule } from './config/config.module';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
@@ -19,12 +18,9 @@ import { ConfigModule } from './config/config.module';
             : undefined,
       },
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
-      exclude: ['/api/(.*)'],
-    }),
     CoreModule,
     ApiModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule { }
