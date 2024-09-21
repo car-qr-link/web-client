@@ -1,0 +1,18 @@
+<%- include('partials/header', {title: 'Уведомление отправлено'}) %>
+
+<!-- Success Message Section -->
+<section class="success-message">
+    <div class="container">
+        <h1>Уведомление успешно отправлено!</h1>
+        <% if (!body.contact) { %>
+            <p>Водителю отправлено уведомление. Он скоро подойдет.</p>
+        <% } else { %>
+            <p>Водитель задерживается. Вы можете связаться с ним по номеру телефона:</p>
+            <div class="phone-number"><a href="tel:<%= body.contact.address %>"><%= body.contact.address %></a></div>
+        <% } %>
+
+        <a href="/" class="btn btn-primary mt-4">Вернуться на главную</a>
+    </div>
+</section>
+
+<%- include('partials/footer') %>
