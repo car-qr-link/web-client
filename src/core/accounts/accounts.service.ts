@@ -1,7 +1,12 @@
 import { accounts, NotificationChannel } from '@car-qr-link/apis';
 import { LinkQrRequest } from '@car-qr-link/apis/dist/accounts';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { AccountsConfig } from 'src/config/accounts.config';
+import { MessagingService } from '../messaging/messaging.service';
+import { StorageService } from '../storage/storage.service';
+import { randomBytes, randomInt } from 'crypto';
+import { parsePhoneNumber } from 'libphonenumber-js';
+import { VerifyRequestPayload } from 'src/api/qrs/qrs.dto';
 
 @Injectable()
 export class AccountsService {
@@ -11,6 +16,8 @@ export class AccountsService {
 
     constructor(
         accountsConfig: AccountsConfig,
+        private readonly messagingService: MessagingService,
+        private readonly storageService: StorageService
     ) {
         this.accountsClient = new accounts.Client(accountsConfig.url);
     }
@@ -74,5 +81,63 @@ export class AccountsService {
             }
         };
         this.logger.debug(`PATCH /qrs/${code}`, request);
+    }
+
+    async linkQrPrepare(code: string, phone: string, licensePlate: string) {
+        const result = await this.getQr(code);
+        if (result.account) {
+            throw new ConflictException('QR уже привязан');
+        }
+
+        const phoneNumber = parsePhoneNumber(phone, 'RU')?.format('E.164');
+        if (!phoneNumber) {
+            throw new BadRequestException('Некорректный формат номера телефона');
+        }
+
+        const requestId = randomBytes(18).toString('hex');
+        const confirmCode = randomInt(10000, 99999).toString();
+
+        await this.storageService.saveVerifyRequest<VerifyRequestPayload>(
+            requestId,
+            {
+                channel: NotificationChannel.Phone,
+                address: phoneNumber,
+                code: confirmCode,
+                payload: {
+                    code,
+                    phone,
+                    licensePlate,
+                },
+            }
+        );
+
+        await this.messagingService.send(
+            NotificationChannel.Phone,
+            phoneNumber,
+            `${confirmCode} - код подтверждения Мешает.рф`
+        );
+
+        return {
+            verification: {
+                id: requestId,
+            }
+        };
+    }
+
+    async linkQrConfirm(requestId: string, confirmCode: string) {
+        const result = await this.storageService.getVerifyRequest<VerifyRequestPayload>(requestId);
+        if (!result) {
+            throw new BadRequestException('Некорректный ИД запроса');
+        }
+
+        if (result.code !== confirmCode) {
+            throw new BadRequestException('Неверный код подтверждения');
+        }
+
+        await this.linkQr(
+            result.payload.code,
+            result.payload.phone,
+            result.payload.licensePlate
+        );
     }
 }

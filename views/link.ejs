@@ -1,0 +1,37 @@
+<%- include('partials/header', { title: 'Активируй QR!' }) %>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        Активация QR
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Код не привязан. Если это Ваша табличка, то необходимо привязать ее к
+                            номеру телефона для активации.</p>
+                        <form method="post" action="/link">
+                            <div class="form-group">
+                                <label for="code">Привязываемый QR-код</label>
+                                <input type="text" name="code" required class="form-control" id="code"
+                                    value="<%- body.qr.code %>" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Номер телефона</label>
+                                <input type="tel" name="phone" required class="form-control" id="phone"
+                                    placeholder="Введите номер телефона">
+                            </div>
+                            <div class="form-group">
+                                <label for="licensePlate">Гос. номер автомобиля</label>
+                                <input type="text" name="licensePlate" class="form-control" id="licensePlate"
+                                    placeholder="Введите гос. номер автомобиля">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Продолжить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<%- include('partials/footer', { showSteps: false }) %>
