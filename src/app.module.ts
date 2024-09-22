@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { ApiModule } from './api/api.module';
-import { AppController } from './app/app.controller';
 import { ConfigModule } from './config/config.module';
 import { CoreModule } from './core/core.module';
+import { RootModule } from './root/root.module';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { CoreModule } from './core/core.module';
     }),
     CoreModule,
     ApiModule,
+    RootModule,
   ],
-  controllers: [AppController],
 })
 export class AppModule { }

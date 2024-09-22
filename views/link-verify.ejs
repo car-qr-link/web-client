@@ -1,0 +1,25 @@
+<%- include('partials/header', { title: 'Активируй QR!' }) %>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        Подтверждение номера телефона
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="/link/confirm">
+                            <input type="hidden" name="requestId" value="<%= body.requestId %>">
+                            <div class="form-group">
+                                <label for="confirmCode">Введите код подтверждения</label>
+                                <input type="text" name="confirmCode" class="form-control" id="confirmCode" placeholder="Введите код из SMS">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Подтвердить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<%- include('partials/footer', { showSteps: false }) %>
