@@ -1,12 +1,12 @@
 import { accounts, NotificationChannel } from '@car-qr-link/apis';
 import { LinkQrRequest } from '@car-qr-link/apis/dist/accounts';
 import { BadRequestException, ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { randomBytes, randomInt } from 'crypto';
+import { parsePhoneNumber } from 'libphonenumber-js';
 import { AccountsConfig } from 'src/config/accounts.config';
 import { MessagingService } from '../messaging/messaging.service';
 import { StorageService } from '../storage/storage.service';
-import { randomBytes, randomInt } from 'crypto';
-import { parsePhoneNumber } from 'libphonenumber-js';
-import { VerifyRequestPayload } from 'src/api/qrs/qrs.dto';
+import { VerifyRequestPayload } from './accounts.dto';
 
 @Injectable()
 export class AccountsService {
@@ -65,7 +65,7 @@ export class AccountsService {
             };
         }
 
-        throw new NotFoundException();
+        throw new NotFoundException('QR не найден');
     }
 
     async linkQr(code: string, phone: string, licensePlate: string): Promise<void> {
