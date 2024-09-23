@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, NotFoundException, Param, Post, Render, Res, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Render, Res, UseFilters } from '@nestjs/common';
 import { Response } from 'express';
 import { AccountsService } from 'src/core/accounts/accounts.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
