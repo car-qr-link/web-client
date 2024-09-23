@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Logger, Param, Post, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Logger, Param, Post, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AccountsService } from 'src/core/accounts/accounts.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { CaptchaGuard } from 'src/core/captcha/captcha.guard';
+import { parsePhoneNumber } from 'libphonenumber-js/mobile';
 
 @Controller()
 @UseFilters(AllExceptionsFilter)
@@ -56,7 +57,17 @@ export class RootController {
         @Body('licensePlate') licensePlate: string,
         @Res() res: Response
     ) {
-        const { verification } = await this.accountsService.linkQrPrepare(code, phone, licensePlate);
+        const phoneNumber = parsePhoneNumber(phone, 'RU')?.format('E.164');
+        if (!phoneNumber) {
+            throw new BadRequestException('Некорректный формат номера телефона');
+        }
+
+        const { verification } = await this.accountsService.linkQrPrepare(
+            code,
+            phoneNumber,
+            licensePlate
+        );
+
         return res.render(
             'link-verify',
             { body: { requestId: verification.id } }
