@@ -11,6 +11,7 @@
 - [NestJS](https://nestjs.com)
 - [Pino](https://getpino.io)
 - [Redis](https://redis.io)
+- [Yandex SmartCaptcha](https://yandex.cloud/ru/docs/smartcaptcha/)
 
 ## Настройки
 
@@ -24,6 +25,7 @@
 | `MESSAGING__QUEUE_PREFIX`  | Префикс очереди отправки сообщений         | `messages:send:`            |
 | `NOTIFICATIONS__URL`       | Адрес сервиса уведомлений                  | `http://notifications:3000` |
 | `NOTIFICATIONS__WAIT_TIME` | Время ожидания реакции водителя в секундах | `300`                       |
+| `CAPTCHA__SERVER_KEY`      | Ключ сервера Yandex SmartCaptcha           | **Обязателен**              |
 
 ## Входящие взаимодействия
 

@@ -26,12 +26,23 @@
                                 <input type="text" name="licensePlate" class="form-control" id="licensePlate"
                                     placeholder="Введите гос. номер автомобиля">
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Продолжить</button>
+                            <div class="form-group">
+                                <div id="captcha-container" class="smart-captcha" style="height: 100px"
+                                    data-sitekey="ysc1_51D06dc0aOP33G2qnVAow7cflNl5vaC1ft6cA7Eta3202e89"
+                                    data-callback="capchaCallback"></div>
+                            </div>
+                            <button type="submit" disabled class="btn btn-primary btn-block">Продолжить</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
+    <script type="text/javascript">
+        window.capchaCallback = () => {
+            document.querySelector('button[type="submit"]').removeAttribute('disabled');
+        };
+    </script>
 
-<%- include('partials/footer', { showSteps: false }) %>
+    <%- include('partials/footer', { showSteps: false }) %>

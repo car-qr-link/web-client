@@ -12,7 +12,8 @@
                             <input type="hidden" name="requestId" value="<%= body.requestId %>">
                             <div class="form-group">
                                 <label for="confirmCode">Введите код подтверждения</label>
-                                <input type="text" name="confirmCode" class="form-control" id="confirmCode" placeholder="Введите код из SMS">
+                                <input type="text" required name="confirmCode" class="form-control" id="confirmCode"
+                                    placeholder="Введите код из SMS">
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Подтвердить</button>
                         </form>
