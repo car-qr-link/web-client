@@ -5,6 +5,7 @@ import { CaptchaConfig } from './captcha.config';
 import { MessagingConfig } from './messaging.config';
 import { NotificationsConfig } from './notifications.config';
 import { StorageConfig } from './storage.config';
+import { VerificationConfig } from './verification.config';
 
 @Module({
     imports: [NestConfigModule.forRoot()],
@@ -13,14 +14,16 @@ import { StorageConfig } from './storage.config';
         StorageConfig,
         MessagingConfig,
         NotificationsConfig,
-        CaptchaConfig
+        CaptchaConfig,
+        VerificationConfig,
     ],
     exports: [
         AccountsConfig,
         StorageConfig,
         MessagingConfig,
         NotificationsConfig,
-        CaptchaConfig
+        CaptchaConfig,
+        VerificationConfig,
     ],
 })
 export class ConfigModule { }

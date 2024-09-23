@@ -1,18 +1,17 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { createClient, RedisClientType } from 'redis';
 import { StorageConfig } from 'src/config/storage.config';
-import { VerifyRequest } from './storage.dto';
 
 @Injectable()
 export class StorageService implements OnModuleInit, OnModuleDestroy {
     protected readonly logger = new Logger(StorageService.name);
 
-    protected readonly namespace = "web-client";
-    protected readonly timeout = 60 * 5;
+    protected readonly namespace: string;
 
     protected readonly client: RedisClientType;
 
     constructor(config: StorageConfig) {
+        this.namespace = config.namespace;
         this.client = createClient({
             url: config.url
         });
@@ -21,17 +20,25 @@ export class StorageService implements OnModuleInit, OnModuleDestroy {
         });
     }
 
-    async saveVerifyRequest<T>(id: string, data: VerifyRequest<T>): Promise<void> {
-        await this.client.setEx(
-            `${this.namespace}:verify:${id}`,
-            this.timeout,
-            JSON.stringify(data)
-        );
+    async save<T>(
+        key: string,
+        data: T,
+        ttl?: number
+    ): Promise<void> {
+        if (ttl) {
+            await this.client.setEx(`${this.namespace}:${key}`, ttl, JSON.stringify(data));
+        } else {
+            await this.client.set(`${this.namespace}:${key}`, JSON.stringify(data));
+        }
     }
 
-    async getVerifyRequest<T>(id: string): Promise<VerifyRequest<T> | null> {
-        const data = await this.client.get(`${this.namespace}:verify:${id}`);
+    async get<T>(key: string): Promise<T | null> {
+        const data = await this.client.get(`${this.namespace}:${key}`);
         return data ? JSON.parse(data) : null
+    }
+
+    async delete(key: string): Promise<void> {
+        await this.client.del(`${this.namespace}:${key}`);
     }
 
     async onModuleInit() {
