@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Logger, Param, Post, Render, Res, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AccountsService } from 'src/core/accounts/accounts.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
+import { CaptchaGuard } from 'src/core/captcha/captcha.guard';
 
 @Controller()
 @UseFilters(AllExceptionsFilter)
@@ -48,6 +49,7 @@ export class RootController {
     }
 
     @Post('link')
+    @UseGuards(CaptchaGuard)
     async link(
         @Body('code') code: string,
         @Body('phone') phone: string,
