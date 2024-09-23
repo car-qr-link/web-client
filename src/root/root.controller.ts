@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Logger, NotFoundException, Param, Post, Redirect, Render, Res } from '@nestjs/common';
+import { Body, Controller, Get, Logger, NotFoundException, Param, Post, Render, Res, UseFilters } from '@nestjs/common';
 import { Response } from 'express';
-import { request } from 'http';
 import { AccountsService } from 'src/core/accounts/accounts.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
+import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 
 @Controller()
+@UseFilters(AllExceptionsFilter)
 export class RootController {
     private readonly logger = new Logger(RootController.name);
 
@@ -22,33 +23,20 @@ export class RootController {
         @Body('code') code: string,
         @Res() res: Response
     ) {
-        try {
-            const { qr, account } = await this.accountsService.getQr(code);
-            if (account) {
-                const result = await this.notificationsService.notify(account);
-
-                return res.render(
-                    'success',
-                    { body: result }
-                );
-            }
+        const { qr, account } = await this.accountsService.getQr(code);
+        if (account) {
+            const result = await this.notificationsService.notify(account);
 
             return res.render(
-                'link',
-                { body: { qr: { code: qr.id } } }
-            );
-        } catch (error) {
-            const context = { body: { error } };
-
-            if (error instanceof NotFoundException) {
-                context.body.error.message = 'QR-код не найден';
-            }
-
-            return res.render(
-                'error',
-                context
+                'success',
+                { body: result }
             );
         }
+
+        return res.render(
+            'link',
+            { body: { qr: { code: qr.id } } }
+        );
     }
 
     @Get(':code')
@@ -66,18 +54,11 @@ export class RootController {
         @Body('licensePlate') licensePlate: string,
         @Res() res: Response
     ) {
-        try {
-            const { verification } = await this.accountsService.linkQrPrepare(code, phone, licensePlate);
-            return res.render(
-                'link-verify',
-                { body: { requestId: verification.id } }
-            );
-        } catch (error) {
-            return res.render(
-                'error',
-                { body: { error } }
-            );
-        }
+        const { verification } = await this.accountsService.linkQrPrepare(code, phone, licensePlate);
+        return res.render(
+            'link-verify',
+            { body: { requestId: verification.id } }
+        );
     }
 
     @Post('link/confirm')
@@ -86,16 +67,9 @@ export class RootController {
         @Body('confirmCode') confirmCode: string,
         @Res() res: Response
     ) {
-        try {
-            await this.accountsService.linkQrConfirm(requestId, confirmCode);
-            return res.render(
-                'link-success'
-            );
-        } catch (error) {
-            return res.render(
-                'error',
-                { body: { error } }
-            );
-        }
+        await this.accountsService.linkQrConfirm(requestId, confirmCode);
+        return res.render(
+            'link-success'
+        );
     }
 }

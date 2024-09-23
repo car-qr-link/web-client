@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
-import { ApiModule } from './api/api.module';
 import { ConfigModule } from './config/config.module';
 import { CoreModule } from './core/core.module';
 import { RootModule } from './root/root.module';
@@ -19,7 +18,6 @@ import { RootModule } from './root/root.module';
       },
     }),
     CoreModule,
-    ApiModule,
     RootModule,
   ],
 })
