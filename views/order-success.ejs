@@ -1,0 +1,25 @@
+<%- include('partials/header', { title: 'Заказ оформлен' }) %>
+
+    <!-- Success Order Message Section -->
+    <section class="success-message">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            Ваш заказ №<%= body.orderId %> успешно оформлен!
+                        </div>
+                        <div class="card-body">
+                            <p>Спасибо за ваш заказ. В ближайшее время мы отправим табличку на указанный вами адрес.</p>
+                            <p>Напоминаем, что после получения таблички необходимо её <strong>активировать</strong>
+                                через наш сайт.</p>
+                            <hr>
+                            <a href="/" class="btn btn-primary btn-block">Вернуться на главную</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer', { showSteps: false }) %>

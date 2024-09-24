@@ -27,9 +27,7 @@
                                     placeholder="Введите гос. номер автомобиля">
                             </div>
                             <div class="form-group">
-                                <div id="captcha-container" class="smart-captcha" style="height: 100px"
-                                    data-sitekey="ysc1_51D06dc0aOP33G2qnVAow7cflNl5vaC1ft6cA7Eta3202e89"
-                                    data-callback="capchaCallback"></div>
+                                <%- body.captcha %>
                             </div>
                             <button type="submit" disabled class="btn btn-primary btn-block">Продолжить</button>
                         </form>
@@ -38,7 +36,6 @@
             </div>
         </div>
     </div>
-    <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
     <script type="text/javascript">
         window.capchaCallback = () => {
             document.querySelector('button[type="submit"]').removeAttribute('disabled');
