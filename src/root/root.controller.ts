@@ -6,6 +6,9 @@ import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { CaptchaGuard } from 'src/core/captcha/captcha.guard';
 import { parsePhoneNumber } from 'libphonenumber-js/mobile';
 import { CaptchaService } from 'src/core/captcha/captcha.service';
+import { VerficationGuard } from 'src/core/verification/verification.guard';
+import { VerificationPayload } from 'src/core/verification/verification.param';
+import { VerifyRequestPayload } from 'src/core/accounts/accounts.model';
 
 @Controller()
 @UseFilters(AllExceptionsFilter)
@@ -118,11 +121,15 @@ export class RootController {
     }
 
     @Post('link/confirm')
+    @UseGuards(VerficationGuard('requestId', 'confirmCode'))
     async linkConfirm(
         @Body('requestId') requestId: string,
         @Body('confirmCode') confirmCode: string,
+        @VerificationPayload() data: VerifyRequestPayload,
         @Res() res: Response
     ) {
+        this.logger.debug(`POST /link/confirm ${data}`);
+
         await this.accountsService.linkQrConfirm(requestId, confirmCode);
         return res.render(
             'link-success'
