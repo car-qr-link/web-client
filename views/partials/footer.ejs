@@ -17,7 +17,7 @@
             </div>
         </div>
         <a href="#" class="btn btn-success mt-4">Заказать табличку</a>
-    </section> 
+    </section>
 <% } %>
 
 
@@ -48,14 +48,19 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>© 2024 Мешает.рф — Все права защищены.</p>
+            <p>© <span x-data="{ year: new Date().getFullYear() }" x-text="year"></span> Мешает.рф — Все права
+                защищены.</p>
             <p><a href="/privacy">Политика конфиденциальности</a> | <a href="/contacts">Контакты</a></p>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha256-GRJrh0oydT1CwS36bBeJK/2TggpaUQC6GzTaTQdZm0k=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"
+        integrity="sha256-NY2a+7GrW++i9IBhowd25bzXcH9BCmBrqYX5i8OxwDQ=" crossorigin="anonymous"></script>
 
 </body>
 
