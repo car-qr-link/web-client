@@ -5,6 +5,7 @@ import { NotificationsService } from 'src/core/notifications/notifications.servi
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { CaptchaGuard } from 'src/core/captcha/captcha.guard';
 import { parsePhoneNumber } from 'libphonenumber-js/mobile';
+import { CaptchaService } from 'src/core/captcha/captcha.service';
 
 @Controller()
 @UseFilters(AllExceptionsFilter)
@@ -13,7 +14,8 @@ export class RootController {
 
     constructor(
         private readonly accountsService: AccountsService,
-        private readonly notificationsService: NotificationsService
+        private readonly notificationsService: NotificationsService,
+        private readonly catpchaService: CaptchaService
     ) { }
 
     @Get()
@@ -27,6 +29,32 @@ export class RootController {
     @Get('contacts')
     @Render('contacts')
     async contacts() { }
+
+    @Get('order')
+    @Render('order')
+    async order() {
+        return {
+            body: {
+                captcha: this.catpchaService.getCaptchaHtml('capchaCallback')
+            }
+        }
+    }
+
+    @Post('order')
+    @UseGuards(CaptchaGuard)
+    @Render('order-success')
+    async orderPost(
+        @Body('fullName') fullName: string,
+        @Body('email') email: string,
+        @Body('address') address: string,
+    ) {
+        this.logger.debug(`POST /order`, { fullName, email, address });
+        return {
+            body: {
+                orderId: 123
+            }
+        };
+    }
 
     @Post()
     async indexPost(
@@ -45,7 +73,14 @@ export class RootController {
 
         return res.render(
             'link',
-            { body: { qr: { code: qr.id } } }
+            {
+                body: {
+                    qr: {
+                        code: qr.id
+                    },
+                    captcha: this.catpchaService.getCaptchaHtml('capchaCallback'),
+                }
+            }
         );
     }
 
