@@ -20,6 +20,14 @@ export class RootController {
     @Render('index')
     async index() { }
 
+    @Get('privacy')
+    @Render('privacy')
+    async privacy() { }
+
+    @Get('contacts')
+    @Render('contacts')
+    async contacts() { }
+
     @Post()
     async indexPost(
         @Body('code') code: string,
