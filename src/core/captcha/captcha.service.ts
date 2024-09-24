@@ -14,6 +14,19 @@ export class CaptchaService {
         }
     }
 
+    getCaptchaHtml(callbackName?: string): string {
+        if (!this.config.clientKey) {
+            throw new Error('Captcha client key is not defined');
+        }
+
+        return `
+        <div id="captcha-container" class="smart-captcha" style="height: 100px"
+            data-sitekey="${this.config.clientKey}"
+            ${callbackName ? `data-callback="${callbackName}"` : ''}></div>
+        <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
+        `;
+    }
+
     async verify(token: string, ip: string): Promise<void> {
         const params = querystring.stringify({
             secret: this.config.serverKey,
