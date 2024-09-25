@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Logger, Param, Post, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, ConflictException, Controller, Get, Logger, Param, Post, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AccountsService } from 'src/core/accounts/accounts.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
@@ -9,6 +9,8 @@ import { CaptchaService } from 'src/core/captcha/captcha.service';
 import { VerficationGuard } from 'src/core/verification/verification.guard';
 import { VerificationPayload } from 'src/core/verification/verification.param';
 import { VerifyRequestPayload } from 'src/core/accounts/accounts.model';
+import { VerificationService } from 'src/core/verification/verification.service';
+import { NotificationChannel } from '@car-qr-link/apis';
 
 @Controller()
 @UseFilters(AllExceptionsFilter)
@@ -18,7 +20,8 @@ export class RootController {
     constructor(
         private readonly accountsService: AccountsService,
         private readonly notificationsService: NotificationsService,
-        private readonly catpchaService: CaptchaService
+        private readonly catpchaService: CaptchaService,
+        private readonly verificationService: VerificationService
     ) { }
 
     @Get()
@@ -108,29 +111,41 @@ export class RootController {
             throw new BadRequestException('Некорректный формат номера телефона');
         }
 
-        const { verification } = await this.accountsService.linkQrPrepare(
-            code,
-            phoneNumber,
-            licensePlate
+        const qr = await this.accountsService.getQr(code);
+        if (qr.account) {
+            throw new ConflictException('QR уже привязан');
+        }
+
+        const requestId = await this.verificationService.sendCode<VerifyRequestPayload>(
+            NotificationChannel.Phone,
+            phone,
+            {
+                phone: phone,
+                licensePlate: licensePlate,
+                code: code,
+            }
         );
 
         return res.render(
             'link-verify',
-            { body: { requestId: verification.id } }
+            { body: { requestId } }
         );
     }
 
     @Post('link/confirm')
     @UseGuards(VerficationGuard('requestId', 'confirmCode'))
     async linkConfirm(
-        @Body('requestId') requestId: string,
-        @Body('confirmCode') confirmCode: string,
         @VerificationPayload() data: VerifyRequestPayload,
         @Res() res: Response
     ) {
         this.logger.debug(`POST /link/confirm ${data}`);
 
-        await this.accountsService.linkQrConfirm(requestId, confirmCode);
+        await this.accountsService.linkQr(
+            data.code,
+            data.phone,
+            data.licensePlate
+        );
+
         return res.render(
             'link-success'
         );

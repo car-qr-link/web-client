@@ -1,9 +1,7 @@
 import { accounts, NotificationChannel } from '@car-qr-link/apis';
 import { LinkQrRequest } from '@car-qr-link/apis/dist/accounts';
-import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { AccountsConfig } from 'src/config/accounts.config';
-import { VerificationService } from '../verification/verification.service';
-import { VerifyRequestPayload } from './accounts.model';
 
 @Injectable()
 export class AccountsService {
@@ -13,7 +11,6 @@ export class AccountsService {
 
     constructor(
         accountsConfig: AccountsConfig,
-        private readonly verificationService: VerificationService,
     ) {
         this.accountsClient = new accounts.Client(accountsConfig.url);
     }
@@ -77,41 +74,5 @@ export class AccountsService {
             }
         };
         this.logger.debug(`PATCH /qrs/${code}`, request);
-    }
-
-    async linkQrPrepare(code: string, phone: string, licensePlate: string) {
-        const result = await this.getQr(code);
-        if (result.account) {
-            throw new ConflictException('QR уже привязан');
-        }
-
-        const requestId = await this.verificationService.sendCode<VerifyRequestPayload>(
-            NotificationChannel.Phone,
-            phone,
-            {
-                phone: phone,
-                licensePlate: licensePlate,
-                code: code,
-            }
-        );
-
-        return {
-            verification: {
-                id: requestId,
-            }
-        };
-    }
-
-    async linkQrConfirm(requestId: string, confirmCode: string) {
-        const result = await this.verificationService.verifyCode<VerifyRequestPayload>(
-            requestId,
-            confirmCode
-        );
-
-        await this.linkQr(
-            result.code,
-            result.phone,
-            result.licensePlate
-        );
     }
 }

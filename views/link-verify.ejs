@@ -16,6 +16,8 @@
                                     placeholder="Введите код из SMS">
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Подтвердить</button>
+                            <button type="button" class="btn btn-link btn-block"
+                                onclick="window.history.back();">Назад</button>
                         </form>
                     </div>
                 </div>
@@ -23,4 +25,4 @@
         </div>
     </div>
 
-<%- include('partials/footer', { showSteps: false }) %>
+    <%- include('partials/footer', { showSteps: false }) %>
