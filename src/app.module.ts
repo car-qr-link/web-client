@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerModule } from 'nestjs-pino';
+import { DataSourceOptions } from 'typeorm';
 import { ConfigModule } from './config/config.module';
 import { CoreModule } from './core/core.module';
+import { dataSourceOptions } from './db';
 import { RootModule } from './root/root.module';
 
 @Module({
@@ -17,8 +20,22 @@ import { RootModule } from './root/root.module';
             : undefined,
       },
     }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: () =>
+        ({
+          ...dataSourceOptions,
+          type: new URL(
+            process.env.DATABASE_URL || dataSourceOptions.url,
+          ).protocol.replaceAll(':', ''),
+          url: process.env.DATABASE_URL,
+
+          synchronize: process.env.NODE_ENV !== 'production',
+          migrationsRun: process.env.NODE_ENV === 'production',
+        }) as unknown as DataSourceOptions,
+    }),
     CoreModule,
     RootModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
