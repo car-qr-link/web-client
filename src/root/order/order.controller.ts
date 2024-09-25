@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { CaptchaGuard } from 'src/core/captcha/captcha.guard';
 import { CaptchaService } from 'src/core/captcha/captcha.service';
+import { OrdersService } from 'src/core/orders/orders.service';
 import { AllExceptionsFilter } from '../filters/all-exceptions.filter';
 
 @Controller('order')
@@ -17,7 +18,10 @@ import { AllExceptionsFilter } from '../filters/all-exceptions.filter';
 export class OrderController {
   private readonly logger = new Logger(OrderController.name);
 
-  constructor(private readonly catpchaService: CaptchaService) {}
+  constructor(
+    private readonly catpchaService: CaptchaService,
+    private readonly ordersService: OrdersService,
+  ) {}
 
   @Get()
   @Render('order')
@@ -37,10 +41,15 @@ export class OrderController {
     @Body('email') email: string,
     @Body('address') address: string,
   ) {
-    this.logger.debug(`New order placed: ${fullName}, ${email}, ${address}`);
+    const order = await this.ordersService.create({
+      fullName,
+      email,
+      address,
+    });
+
     return {
       body: {
-        orderId: 123,
+        orderNumber: order.number,
       },
     };
   }

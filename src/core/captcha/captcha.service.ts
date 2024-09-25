@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CaptchaConfig } from 'src/config/captcha.config';
 import * as querystring from 'querystring';
+import { CaptchaConfig } from 'src/config/captcha.config';
 
 @Injectable()
 export class CaptchaService {
@@ -21,6 +21,11 @@ export class CaptchaService {
         <div id="captcha-container" class="smart-captcha" style="height: 100px"
             data-sitekey="${this.config.clientKey}"
             ${callbackName ? `data-callback="${callbackName}"` : ''}></div>
+        <script type="text/javascript">
+          window.addEventListener('pageshow', function(event) {
+              window.smartCaptcha.reset();
+          });
+        </script>
         <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
         `;
   }
