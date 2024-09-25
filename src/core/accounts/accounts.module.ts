@@ -4,11 +4,8 @@ import { VerificationModule } from '../verification/verification.module';
 import { AccountsService } from './accounts.service';
 
 @Module({
-  imports: [
-    ConfigModule,
-    VerificationModule,
-  ],
+  imports: [ConfigModule, VerificationModule],
   providers: [AccountsService],
   exports: [AccountsService],
 })
-export class AccountsModule { }
+export class AccountsModule {}

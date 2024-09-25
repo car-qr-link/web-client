@@ -21,4 +21,4 @@ import { RootModule } from './root/root.module';
     RootModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

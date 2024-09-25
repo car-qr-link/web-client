@@ -4,33 +4,28 @@ import { MessagingConfig } from 'src/config/messaging.config';
 
 @Injectable()
 export class MessagingService implements OnModuleInit, OnModuleDestroy {
-    protected readonly client: messaging.Client;
+  protected readonly client: messaging.Client;
 
-    constructor(
-        protected readonly config: MessagingConfig
-    ) {
-        this.client = new messaging.Client(config.brokerUrl);
-    }
+  constructor(protected readonly config: MessagingConfig) {
+    this.client = new messaging.Client(config.brokerUrl);
+  }
 
-    async send(
-        channel: NotificationChannel,
-        address: string,
-        content: string
-    ): Promise<void> {
-        await this.client.publish(
-            this.config.queuePrefix + channel,
-            {
-                channel: channel,
-                message: content,
-                to: address,
-            }
-        );
-    }
+  async send(
+    channel: NotificationChannel,
+    address: string,
+    content: string,
+  ): Promise<void> {
+    await this.client.publish(this.config.queuePrefix + channel, {
+      channel: channel,
+      message: content,
+      to: address,
+    });
+  }
 
-    async onModuleInit() {
-        await this.client.start();
-    }
-    async onModuleDestroy() {
-        await this.client.close();
-    }
+  async onModuleInit() {
+    await this.client.start();
+  }
+  async onModuleDestroy() {
+    await this.client.close();
+  }
 }

@@ -7,4 +7,4 @@ import { ConfigModule } from 'src/config/config.module';
   providers: [CaptchaService],
   exports: [CaptchaService],
 })
-export class CaptchaModule { }
+export class CaptchaModule {}

@@ -1,8 +1,8 @@
-import { NotificationChannel } from "@car-qr-link/apis";
+import { NotificationChannel } from '@car-qr-link/apis';
 
 export interface VerifyRequest<T> {
-    channel: NotificationChannel;
-    address: string;
-    code: string;
-    payload: T;
+  channel: NotificationChannel;
+  address: string;
+  code: string;
+  payload: T;
 }

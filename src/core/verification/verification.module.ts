@@ -9,4 +9,4 @@ import { ConfigModule } from 'src/config/config.module';
   providers: [VerificationService],
   exports: [VerificationService],
 })
-export class VerificationModule { }
+export class VerificationModule {}
