@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RootController } from './root.controller';
+import { QrController } from './qr.controller';
 
-describe('RootController', () => {
-  let controller: RootController;
+describe('QrController', () => {
+  let controller: QrController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [RootController],
+      controllers: [QrController],
     }).compile();
 
-    controller = module.get<RootController>(RootController);
+    controller = module.get<QrController>(QrController);
   });
 
   it('should be defined', () => {

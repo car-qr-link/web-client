@@ -8,19 +8,17 @@ import {
   Render,
   Res,
   UseFilters,
-  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AccountsService } from 'src/core/accounts/accounts.service';
-import { CaptchaGuard } from 'src/core/captcha/captcha.guard';
 import { CaptchaService } from 'src/core/captcha/captcha.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
-import { AllExceptionsFilter } from './filters/all-exceptions.filter';
+import { AllExceptionsFilter } from '../filters/all-exceptions.filter';
 
 @Controller()
 @UseFilters(AllExceptionsFilter)
-export class RootController {
-  private readonly logger = new Logger(RootController.name);
+export class QrController {
+  private readonly logger = new Logger(QrController.name);
 
   constructor(
     private readonly accountsService: AccountsService,
@@ -39,32 +37,6 @@ export class RootController {
   @Get('contacts')
   @Render('contacts')
   async contacts() {}
-
-  @Get('order')
-  @Render('order')
-  async order() {
-    return {
-      body: {
-        captcha: this.catpchaService.getCaptchaHtml('capchaCallback'),
-      },
-    };
-  }
-
-  @Post('order')
-  @UseGuards(CaptchaGuard)
-  @Render('order-success')
-  async orderPost(
-    @Body('fullName') fullName: string,
-    @Body('email') email: string,
-    @Body('address') address: string,
-  ) {
-    this.logger.debug(`POST /order`, { fullName, email, address });
-    return {
-      body: {
-        orderId: 123,
-      },
-    };
-  }
 
   @Post()
   async indexPost(@Body('code') code: string, @Res() res: Response) {
