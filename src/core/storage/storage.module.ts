@@ -7,4 +7,4 @@ import { ConfigModule } from 'src/config/config.module';
   providers: [StorageService],
   exports: [StorageService],
 })
-export class StorageModule { }
+export class StorageModule {}

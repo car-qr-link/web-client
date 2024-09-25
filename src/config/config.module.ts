@@ -8,22 +8,22 @@ import { StorageConfig } from './storage.config';
 import { VerificationConfig } from './verification.config';
 
 @Module({
-    imports: [NestConfigModule.forRoot()],
-    providers: [
-        AccountsConfig,
-        StorageConfig,
-        MessagingConfig,
-        NotificationsConfig,
-        CaptchaConfig,
-        VerificationConfig,
-    ],
-    exports: [
-        AccountsConfig,
-        StorageConfig,
-        MessagingConfig,
-        NotificationsConfig,
-        CaptchaConfig,
-        VerificationConfig,
-    ],
+  imports: [NestConfigModule.forRoot()],
+  providers: [
+    AccountsConfig,
+    StorageConfig,
+    MessagingConfig,
+    NotificationsConfig,
+    CaptchaConfig,
+    VerificationConfig,
+  ],
+  exports: [
+    AccountsConfig,
+    StorageConfig,
+    MessagingConfig,
+    NotificationsConfig,
+    CaptchaConfig,
+    VerificationConfig,
+  ],
 })
-export class ConfigModule { }
+export class ConfigModule {}
