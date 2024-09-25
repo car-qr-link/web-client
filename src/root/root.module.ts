@@ -1,20 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AccountsModule } from 'src/core/accounts/accounts.module';
-import { CaptchaModule } from 'src/core/captcha/captcha.module';
-import { NotificationsModule } from 'src/core/notifications/notifications.module';
 import { LinkModule } from './link/link.module';
 import { OrderModule } from './order/order.module';
-import { RootController } from './root.controller';
+import { QrModule } from './qr/qr.module';
 
 @Module({
-  imports: [
-    AccountsModule,
-    NotificationsModule,
-    CaptchaModule,
-    //
-    LinkModule,
-    OrderModule,
-  ],
-  controllers: [RootController],
+  imports: [OrderModule, LinkModule, QrModule],
 })
 export class RootModule {}
