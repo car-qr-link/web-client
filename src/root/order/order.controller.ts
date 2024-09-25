@@ -17,7 +17,7 @@ import { AllExceptionsFilter } from '../filters/all-exceptions.filter';
 export class OrderController {
   private readonly logger = new Logger(OrderController.name);
 
-  constructor(private readonly catpchaService: CaptchaService) { }
+  constructor(private readonly catpchaService: CaptchaService) {}
 
   @Get()
   @Render('order')
