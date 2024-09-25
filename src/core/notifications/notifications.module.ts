@@ -7,4 +7,4 @@ import { ConfigModule } from 'src/config/config.module';
   providers: [NotificationsService],
   exports: [NotificationsService],
 })
-export class NotificationsModule { }
+export class NotificationsModule {}

@@ -1,5 +1,5 @@
 export interface VerifyRequestPayload {
-    phone: string;
-    licensePlate: string;
-    code: string;
+  phone: string;
+  licensePlate: string;
+  code: string;
 }

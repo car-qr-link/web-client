@@ -7,6 +7,13 @@ import { CaptchaModule } from './captcha/captcha.module';
 import { VerificationModule } from './verification/verification.module';
 
 @Module({
-  imports: [StorageModule, AccountsModule, MessagingModule, NotificationsModule, CaptchaModule, VerificationModule]
+  imports: [
+    StorageModule,
+    AccountsModule,
+    MessagingModule,
+    NotificationsModule,
+    CaptchaModule,
+    VerificationModule,
+  ],
 })
-export class CoreModule { }
+export class CoreModule {}
