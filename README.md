@@ -17,15 +17,17 @@
 
 Для настройки используются переменные окружения:
 
-| Название                   | Описание                                   | По умолчанию                |
-| -------------------------- | ------------------------------------------ | --------------------------- |
-| `ACCOUNTS__URL`            | Адрес сервиса учетных записей              | `http://accounts:3000`      |
-| `STORAGE__URL`             | Адрес KV-хранилища (Redis)                 | `redis://localhost:6379/0`  |
-| `MESSAGING__BROKER_URL`    | Адрес брокера сообщений (Redis)            | `redis://localhost:6379/0`  |
-| `MESSAGING__QUEUE_PREFIX`  | Префикс очереди отправки сообщений         | `messages:send:`            |
-| `NOTIFICATIONS__URL`       | Адрес сервиса уведомлений                  | `http://notifications:3000` |
-| `NOTIFICATIONS__WAIT_TIME` | Время ожидания реакции водителя в секундах | `300`                       |
-| `CAPTCHA__SERVER_KEY`      | Ключ сервера Yandex SmartCaptcha           | **Обязателен**              |
+| Название                   | Описание                                   | По умолчанию                                              |
+| -------------------------- | ------------------------------------------ | --------------------------------------------------------- |
+| `DATABASE__URL`            | Адрес базы данных                          | `mariadb://web-client:web-client@mariadb:3306/web-client` |
+| `ACCOUNTS__URL`            | Адрес сервиса учетных записей              | `http://accounts:3000`                                    |
+| `STORAGE__URL`             | Адрес KV-хранилища (Redis)                 | `redis://localhost:6379/0`                                |
+| `MESSAGING__BROKER_URL`    | Адрес брокера сообщений (Redis)            | `redis://localhost:6379/0`                                |
+| `MESSAGING__QUEUE_PREFIX`  | Префикс очереди отправки сообщений         | `messages:send:`                                          |
+| `NOTIFICATIONS__URL`       | Адрес сервиса уведомлений                  | `http://notifications:3000`                               |
+| `NOTIFICATIONS__WAIT_TIME` | Время ожидания реакции водителя в секундах | `300`                                                     |
+| `CAPTCHA__CLIENT_KEY`      | Ключ клиента Yandex SmartCaptcha           | **Обязателен**                                            |
+| `CAPTCHA__SERVER_KEY`      | Ключ сервера Yandex SmartCaptcha           | **Обязателен**                                            |
 
 ## Входящие взаимодействия
 

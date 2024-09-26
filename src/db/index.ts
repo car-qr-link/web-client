@@ -4,7 +4,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 export const dataSourceOptions = {
   type: 'mariadb',
   url:
-    process.env.DATABASE_URL ||
+    process.env.DATABASE__URL ||
     'mariadb://web-client:web-client@mariadb:3306/web-client',
 
   synchronize: process.env.NODE_ENV !== 'production',
