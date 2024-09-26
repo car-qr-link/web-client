@@ -26,9 +26,9 @@ import { RootModule } from './root/root.module';
         ({
           ...dataSourceOptions,
           type: new URL(
-            process.env.DATABASE_URL || dataSourceOptions.url,
+            process.env.DATABASE__URL || dataSourceOptions.url,
           ).protocol.replaceAll(':', ''),
-          url: process.env.DATABASE_URL,
+          url: process.env.DATABASE__URL,
 
           synchronize: process.env.NODE_ENV !== 'production',
           migrationsRun: process.env.NODE_ENV === 'production',
