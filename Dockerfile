@@ -46,6 +46,7 @@ COPY package*.json ./
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
+COPY views ./views
 
 # Expose the port the app runs on
 EXPOSE 3000
