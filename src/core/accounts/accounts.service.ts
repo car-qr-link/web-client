@@ -14,53 +14,7 @@ export class AccountsService {
   }
 
   async getQr(code: string): Promise<accounts.GetQrResponse> {
-    this.logger.debug(`GET /qrs/${code}`);
-
-    if (code === '1') {
-      return {
-        qr: {
-          id: '1',
-          accountId: null,
-        },
-        account: null,
-      };
-    }
-    if (code === '2') {
-      return {
-        qr: {
-          id: '2',
-          accountId: '1',
-        },
-        account: {
-          id: '1',
-          contacts: [
-            {
-              channel: NotificationChannel.Phone,
-              address: process.env.PHONE,
-            },
-          ],
-        },
-      };
-    }
-    if (code === '3') {
-      return {
-        qr: {
-          id: '3',
-          accountId: '2',
-        },
-        account: {
-          id: '2',
-          contacts: [
-            {
-              channel: NotificationChannel.Phone,
-              address: process.env.PHONE,
-            },
-          ],
-        },
-      };
-    }
-
-    throw new NotFoundException('QR не найден');
+    return this.accountsClient.getQr(code);
   }
 
   async linkQr(
@@ -81,6 +35,7 @@ export class AccountsService {
         licensePlate,
       },
     };
-    this.logger.debug(`PATCH /qrs/${code}`, request);
+
+    await this.accountsClient.patchQr(code, request);
   }
 }

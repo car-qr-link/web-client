@@ -3,7 +3,73 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NPM_TOKEN: $NPM_TOKEN
+    container_name: web-client
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DATABASE__URL=mariadb://web-client:web-client@db:3306/web-client
+      - ACCOUNTS__URL=http://accounts:3000/api/v1
+      - STORAGE__URL=redis://redis:6379/0
+      - MESSAGING__BROKER_URL=redis://redis:6379/0
+      - NOTIFICATIONS__URL=http://notifications:3000/api/v1
+      - CAPTCHA__CLIENT_KEY=${CAPTCHA__CLIENT_KEY}
+      - CAPTCHA__SERVER_KEY=${CAPTCHA__SERVER_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      accounts:
+        condition: service_started
+      notifications:
+        condition: service_started
+      
+  
+  accounts:
+    image: ghcr.io/car-qr-link/accounts:latest
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=mariadb://accounts:accounts@db:3306/accounts
+    depends_on:
+      db:
+        condition: service_healthy
+
+  notifications:
+    image: ghcr.io/car-qr-link/notifications:latest
+    environment:
+      STORAGE__URL: redis://redis:6379/0
+      MESSAGING__BROKER_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  db:
+    image: mariadb:lts
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./assets/db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis:7
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  mariadb_data:
+  redis-data:
