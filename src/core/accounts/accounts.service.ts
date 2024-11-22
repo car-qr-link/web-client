@@ -1,4 +1,4 @@
-import { accounts, NotificationChannel } from '@car-qr-link/apis';
+import { accounts, HttpError, NotFoundError, NotificationChannel } from '@car-qr-link/apis';
 import { LinkQrRequest } from '@car-qr-link/apis/dist/accounts';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { AccountsConfig } from 'src/config/accounts.config';
@@ -14,7 +14,15 @@ export class AccountsService {
   }
 
   async getQr(code: string): Promise<accounts.GetQrResponse> {
-    return this.accountsClient.getQr(code);
+    try {
+      return await this.accountsClient.getQr(code);
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        throw new NotFoundException('QR не найден');
+      }
+
+      throw error;
+    }
   }
 
   async linkQr(
