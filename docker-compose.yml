@@ -33,6 +33,8 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=mariadb://accounts:accounts@db:3306/accounts
+    ports:
+      - "3001:3000"
     depends_on:
       db:
         condition: service_healthy
@@ -42,6 +44,8 @@ services:
     environment:
       STORAGE__URL: redis://redis:6379/0
       MESSAGING__BROKER_URL: redis://redis:6379/0
+    ports:
+      - "3002:3000"
     depends_on:
       redis:
         condition: service_healthy
