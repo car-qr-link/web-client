@@ -11,7 +11,7 @@ export class NotificationsConfig {
       'NOTIFICATIONS__URL',
       'http://notifications:3000',
     );
-    this.waitTimeSecs = configService.get('NOTIFICATIONS__WAIT_TIME', 5 * 60);
+    this.waitTimeSecs = configService.get('NOTIFICATIONS__WAIT_TIME', 1 * 60);
   }
 
   public get waitTime(): number {

@@ -25,7 +25,7 @@ export class NotificationsService {
       contact:
         !res.answer &&
           new Date().getTime() - res.notification.sentAt.getTime() >
-          this.config.waitTimeSecs
+          this.config.waitTime
           ? account.contacts.find(
             (c) => c.channel === NotificationChannel.Phone,
           )
