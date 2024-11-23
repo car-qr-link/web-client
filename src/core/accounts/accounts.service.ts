@@ -1,6 +1,15 @@
-import { accounts, HttpError, NotFoundError, NotificationChannel } from '@car-qr-link/apis';
+import {
+  accounts,
+  NotFoundError,
+  NotificationChannel,
+} from '@car-qr-link/apis';
 import { LinkQrRequest } from '@car-qr-link/apis/dist/accounts';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { AccountsConfig } from 'src/config/accounts.config';
 
 @Injectable()
@@ -21,7 +30,9 @@ export class AccountsService {
         throw new NotFoundException('QR не найден');
       }
 
-      throw error;
+      this.logger.error(error);
+
+      throw new ServiceUnavailableException('Сервис недоступен');
     }
   }
 
