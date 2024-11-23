@@ -51,9 +51,9 @@ export class LinkController {
     const requestId =
       await this.verificationService.sendCode<VerifyRequestPayload>(
         NotificationChannel.Phone,
-        phone,
+        phoneNumber,
         {
-          phone: phone,
+          phone: phoneNumber,
           licensePlate: licensePlate,
           code: code,
         },
