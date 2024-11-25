@@ -7,10 +7,10 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE__URL=${DATABASE_URL}
-      - ACCOUNTS__URL=http://accounts:3000/api/v1
+      - ACCOUNTS__URL=${ACCOUNTS__URL}
       - STORAGE__URL=${STORAGE_URL}
       - MESSAGING__BROKER_URL=${BROKER_URL}
-      - NOTIFICATIONS__URL=http://notifications:3000/api/v1
+      - NOTIFICATIONS__URL=${NOTIFICATIONS__URL}
       - CAPTCHA__CLIENT_KEY=${CAPTCHA__CLIENT_KEY}
       - CAPTCHA__SERVER_KEY=${CAPTCHA__SERVER_KEY}
     deploy:
