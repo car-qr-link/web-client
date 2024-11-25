@@ -1,0 +1,37 @@
+services:
+  app:
+    image: ghcr.io/car-qr-link/web-client:latest
+    networks:
+      - internal
+      - public
+    environment:
+      - NODE_ENV=production
+      - DATABASE__URL=${DATABASE_URL}
+      - ACCOUNTS__URL=http://accounts:3000/api/v1
+      - STORAGE__URL=${STORAGE_URL}
+      - MESSAGING__BROKER_URL=${BROKER_URL}
+      - NOTIFICATIONS__URL=http://notifications:3000/api/v1
+      - CAPTCHA__CLIENT_KEY=${CAPTCHA__CLIENT_KEY}
+      - CAPTCHA__SERVER_KEY=${CAPTCHA__SERVER_KEY}
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=public"
+        - "traefik.http.routers.web-client.rule=Host(`carqr.link`)"
+        - "traefik.http.routers.web-client.entrypoints=https"
+        - "traefik.http.routers.web-client.tls.certresolver=le"
+        - "traefik.http.routers.web-client-ru.rule=Host(`xn--80ajbz7a7a.xn--p1ai`)"
+        - "traefik.http.routers.web-client-ru.entrypoints=https"
+        - "traefik.http.routers.web-client-ru.tls.certresolver=le"
+        - "traefik.http.services.web-client.loadbalancer.server.port=3000"
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+
+networks:
+  internal:
+    external: true
+  public:
+    external: true
